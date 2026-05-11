@@ -1,0 +1,146 @@
+:root {
+  --color-abyss:     #030d1a;
+  --color-deep:      #071e38;
+  --color-mid:       #0a3055;
+  --color-aqua:      #00b4d8;
+  --color-aqua-dim:  #0077a3;
+  --color-gold:      #c9a84c;
+  --color-gold-dim:  #a8883a;
+  --color-foam:      #e8f4f8;
+  --color-text:      #c8dde8;
+  --color-text-dim:  #7ba0b4;
+  --color-glass:     rgba(255,255,255,0.04);
+  --color-glass-border: rgba(255,255,255,0.08);
+
+  --font-display: 'Cormorant Garamond', serif;
+  --font-body:    'DM Sans', sans-serif;
+  --font-impact:  'Bebas Neue', sans-serif;
+
+  --radius-card: 2px;
+  --radius-btn:  2px;
+  --transition:  all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+  --space-xs: 0.5rem;
+  --space-sm: clamp(0.5rem, 1.5vw, 1rem);
+  --space-md: clamp(1rem, 3vw, 2rem);
+  --space-lg: clamp(1.5rem, 4vw, 4rem);
+  --space-xl: clamp(2rem, 6vw, 8rem);
+  --space-xxl: clamp(2.5rem, 8vw, 12rem);
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  overflow-x: hidden;
+}
+
+body {
+  font-family: var(--font-body);
+  background-color: var(--color-abyss);
+  color: var(--color-text);
+  line-height: 1.7;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display);
+  font-weight: 300;
+  line-height: 1.1;
+  color: var(--color-foam);
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+}
+
+h1 {
+  font-weight: 600;
+  font-style: italic;
+  font-size: clamp(2.2rem, 8vw, 6rem);
+}
+
+h2 {
+  font-size: clamp(1.8rem, 6vw, 3.5rem);
+  letter-spacing: -0.02em;
+}
+
+/* Eyebrows and labels */
+.eyebrow {
+  font-family: var(--font-body);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  font-size: 13px;
+  color: var(--color-aqua);
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+  transition: var(--transition);
+}
+
+/* Base button styles */
+.btn-primary {
+  background: var(--color-aqua);
+  color: var(--color-abyss);
+  padding: 16px 36px;
+  border-radius: var(--radius-btn);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-weight: 600;
+  font-size: 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.btn-primary:hover {
+  transform: scale(1.02);
+  filter: brightness(1.1);
+}
+
+.btn-secondary {
+  background: transparent;
+  color: var(--color-gold);
+  border: 1.5px solid var(--color-gold);
+  padding: 16px 36px;
+  border-radius: var(--radius-btn);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-weight: 600;
+  font-size: 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.btn-secondary:hover {
+  background: var(--color-gold);
+  color: var(--color-abyss);
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 var(--space-md);
+}
+
+.glass-card {
+  background: var(--color-glass);
+  border: 1px solid var(--color-glass-border);
+  border-radius: var(--radius-card);
+  padding: var(--space-md);
+}
