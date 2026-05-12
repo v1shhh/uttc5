@@ -24,49 +24,72 @@ export default function Location() {
       {/* We keep Navbar but completely omit the Footer on this page for a focused interstitial experience. */}
       <Navbar />
 
-      <main 
-        className="flex items-center justify-center w-full relative overflow-hidden min-h-[100dvh]" 
-        style={{ 
-          paddingTop: '80px', // Space for fixed navbar
-          paddingBottom: '40px',
+      <main
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          width: '100%',
+          minHeight: '100dvh',
+          paddingTop: '80px',
+          paddingBottom: '1px',
+          paddingLeft: '16px',
+          paddingRight: '16px',
+          position: 'relative',
+          overflow: 'hidden'
         }}
       >
         {/* Subtle ambient glow in the background */}
-        <div 
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80vw] h-[80vw] max-w-[600px] max-h-[600px] rounded-full blur-[100px] pointer-events-none" 
-          style={{ background: 'rgba(0, 180, 216, 0.05)' }} 
+        <div
+          style={{
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            width: '80vw',
+            height: '80vw',
+            maxWidth: '600px',
+            maxHeight: '600px',
+            borderRadius: '50%',
+            filter: 'blur(100px)',
+            pointerEvents: 'none',
+            background: 'rgba(0, 180, 216, 0.05)'
+          }}
         />
-        
-        <div className="container relative z-10 px-4 w-full flex items-center justify-center">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95, y: 10 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-            style={{
-              background: 'rgba(10, 15, 25, 0.7)',
-              border: '1px solid var(--color-glass-border)',
-              borderRadius: '24px',
-              padding: 'clamp(32px, 8vw, 48px)',
-              textAlign: 'center',
-              backdropFilter: 'blur(16px)',
-              WebkitBackdropFilter: 'blur(16px)',
-              boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1)',
-              width: '100%',
-              maxWidth: '560px'
-            }}
-          >
+
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95, y: 10 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+          style={{
+            position: 'relative',
+            zIndex: 10,
+            background: 'rgba(10, 15, 25, 0.7)',
+            border: '1px solid var(--color-glass-border)',
+            borderRadius: '24px',
+            padding: 'clamp(32px, 8vw, 48px)',
+            textAlign: 'center',
+            backdropFilter: 'blur(16px)',
+            WebkitBackdropFilter: 'blur(16px)',
+            boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1)',
+            width: '100%',
+            maxWidth: '560px'
+          }}
+        >
             {/* Lock/Security Icon */}
-            <div 
-              style={{ 
-                display: 'inline-flex', 
-                alignItems: 'center', 
-                justifyContent: 'center', 
-                width: '64px', 
-                height: '64px', 
-                borderRadius: '50%', 
-                background: 'rgba(0, 180, 216, 0.1)', 
-                color: 'var(--color-aqua)', 
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                width: '64px',
+                height: '64px',
+                borderRadius: '50%',
+                background: 'rgba(0, 180, 216, 0.1)',
+                color: 'var(--color-aqua)',
                 marginBottom: '1.5rem',
+                marginLeft: 'auto',
+                marginRight: 'auto',
                 border: '1px solid rgba(0, 180, 216, 0.2)'
               }}
             >
@@ -76,22 +99,24 @@ export default function Location() {
               </svg>
             </div>
             
-            <h1 style={{ 
-              fontFamily: 'var(--font-display)', 
-              fontSize: 'clamp(28px, 6vw, 40px)', 
-              marginBottom: '1rem', 
-              color: 'var(--color-text)', 
+            <h1 style={{
+              fontFamily: 'var(--font-display)',
+              fontSize: 'clamp(28px, 6vw, 40px)',
+              marginBottom: '1rem',
+              color: 'var(--color-text)',
               lineHeight: 1.1,
-              letterSpacing: '-0.02em'
+              letterSpacing: '-0.02em',
+              textAlign: 'center'
             }}>
               Private <span style={{ color: 'var(--color-gold)' }}>Showroom</span>
             </h1>
             
-            <p style={{ 
-              fontSize: '16px', 
-              color: 'var(--color-text-dim)', 
-              marginBottom: '2rem', 
-              lineHeight: 1.6 
+            <p style={{
+              fontSize: '16px',
+              color: 'var(--color-text-dim)',
+              marginBottom: '2rem',
+              lineHeight: 1.6,
+              textAlign: 'center'
             }}>
               To guarantee the highest level of privacy and a dedicated consultation for our VIP clients, our showroom and Abu Dhabi locations operate strictly by appointment.
             </p>
@@ -106,14 +131,15 @@ export default function Location() {
               border: '1px solid rgba(255, 255, 255, 0.05)', 
               marginBottom: '2rem' 
             }}>
-              <p style={{ 
-                fontSize: '12px', 
-                textTransform: 'uppercase', 
-                letterSpacing: '0.15em', 
-                color: 'var(--color-text-dim)', 
-                marginBottom: '1rem', 
+              <p style={{
+                fontSize: '12px',
+                textTransform: 'uppercase',
+                letterSpacing: '0.15em',
+                color: 'var(--color-text-dim)',
+                marginBottom: '1rem',
                 fontWeight: 600,
-                lineHeight: 1
+                lineHeight: 1,
+                textAlign: 'center'
               }}>
                 Call To Schedule
               </p>
@@ -129,27 +155,27 @@ export default function Location() {
               </div>
             </div>
 
-            <p style={{ 
-              fontSize: '14px', 
-              color: 'var(--color-text-dim)', 
-              marginBottom: '2.5rem', 
-              lineHeight: 1.6 
+            <p style={{
+              fontSize: '14px',
+              color: 'var(--color-text-dim)',
+              marginBottom: '2.5rem',
+              lineHeight: 1.6,
+              textAlign: 'center'
             }}>
               Alternatively, you may walk-in to our <GlowingContactLink href="https://maps.app.goo.gl/zfDgSPBRYbBgRJux7" target="_blank" rel="noopener noreferrer">Dubai HQ</GlowingContactLink>.
             </p>
             
-            <div>
-              <a href="/" className="btn-secondary" style={{ 
-                width: '100%', 
-                fontSize: '13px', 
+            <div style={{ textAlign: 'center' }}>
+              <a href="/" className="btn-secondary" style={{
+                width: '100%',
+                fontSize: '13px',
                 letterSpacing: '0.1em',
-                padding: '16px 24px' 
+                padding: '16px 24px'
               }}>
                 &larr; RETURN TO WEBSITE
               </a>
             </div>
           </motion.div>
-        </div>
       </main>
     </>
   );

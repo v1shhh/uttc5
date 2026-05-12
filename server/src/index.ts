@@ -21,7 +21,7 @@ async function startServer() {
   app.set('trust proxy', 1);
 
   const isProd = process.env.NODE_ENV === 'production';
-  const PORT = 3000;
+  let PORT = 3001;
 
   // Initialize DB
   runMigrations();
@@ -58,8 +58,19 @@ async function startServer() {
     });
   }
 
-  app.listen(PORT, '0.0.0.0', () => {
+  const server = app.listen(PORT, '0.0.0.0', () => {
     console.log("Server running on http://0.0.0.0:" + PORT);
+  });
+
+  server.on('error', (err: any) => {
+    if (err.code === 'EADDRINUSE') {
+      console.log(`Port ${PORT} in use, trying ${PORT + 1}...`);
+      PORT++;
+      server.close();
+      setTimeout(() => {
+        server.listen(PORT, '0.0.0.0');
+      }, 100);
+    }
   });
 }
 

@@ -3,7 +3,7 @@ import ScrollReveal from '../ui/ScrollReveal';
 
 export default function About() {
   return (
-    <section id="about" style={{ padding: 'var(--space-xxl) 0', backgroundColor: 'var(--color-deep)' }}>
+    <section id="about" style={{ padding: 'var(--space-xxl) 0', background: 'linear-gradient(to bottom, var(--color-abyss), var(--color-deep))' }}>
       <div className="container">
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 350px), 1fr))', gap: 'var(--space-xl)', alignItems: 'center' }}>
           

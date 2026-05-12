@@ -38,6 +38,107 @@ export const getActiveExperiments = () => {
   }
 }
 
+const QUEUE_KEY = 'uttc_analytics_queue';
+const MAX_QUEUE_SIZE = 100;
+const BATCH_INTERVAL = 5000; // 5s
+const MAX_RETRIES = 3;
+
+let batchQueue: any[] = [];
+let batchTimer: NodeJS.Timeout | null = null;
+
+const getQueue = (): any[] => {
+  try {
+    return JSON.parse(localStorage.getItem(QUEUE_KEY) || '[]');
+  } catch {
+    return [];
+  }
+};
+
+const saveQueue = (queue: any[]) => {
+  try {
+    localStorage.setItem(QUEUE_KEY, JSON.stringify(queue.slice(0, MAX_QUEUE_SIZE)));
+  } catch {}
+};
+
+const sendBatch = async (events: any[], retryCount = 0): Promise<boolean> => {
+  if (events.length === 0) return true;
+
+  try {
+    const response = await fetch('/api/analytics/batch', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ events }),
+      keepalive: true,
+      signal: AbortSignal.timeout(10000)
+    });
+
+    if (response.ok) return true;
+
+    if (response.status === 429 && retryCount < MAX_RETRIES) {
+      await new Promise(r => setTimeout(r, Math.pow(2, retryCount) * 1000));
+      return sendBatch(events, retryCount + 1);
+    }
+
+    return false;
+  } catch (err) {
+    if (retryCount < MAX_RETRIES) {
+      await new Promise(r => setTimeout(r, Math.pow(2, retryCount) * 1000));
+      return sendBatch(events, retryCount + 1);
+    }
+    return false;
+  }
+};
+
+const flushBatch = async () => {
+  if (batchTimer) {
+    clearTimeout(batchTimer);
+    batchTimer = null;
+  }
+
+  const toSend = [...batchQueue];
+  batchQueue = [];
+
+  if (toSend.length === 0) return;
+
+  const success = await sendBatch(toSend);
+
+  if (!success) {
+    const queue = getQueue();
+    saveQueue([...queue, ...toSend]);
+  }
+};
+
+const processQueue = async () => {
+  const queue = getQueue();
+  if (queue.length === 0) return;
+
+  const success = await sendBatch(queue);
+  if (success) {
+    localStorage.removeItem(QUEUE_KEY);
+  }
+};
+
+if (typeof window !== 'undefined') {
+  setInterval(processQueue, 30000);
+
+  window.addEventListener('online', processQueue);
+
+  window.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'hidden') {
+      flushBatch();
+    }
+  });
+
+  window.addEventListener('beforeunload', () => {
+    if (batchQueue.length > 0) {
+      const data = JSON.stringify({ events: batchQueue });
+      if (navigator.sendBeacon) {
+        navigator.sendBeacon('/api/analytics/batch', data);
+      }
+    }
+  });
+}
+
 export const trackEvent = (
   event_type: string,
   event_label?: string,
@@ -52,15 +153,18 @@ export const trackEvent = (
     scroll_pct: metadata?.scroll_pct,
     referrer: document.referrer,
     metadata,
-    experiments: getActiveExperiments()
+    experiments: getActiveExperiments(),
+    timestamp: new Date().toISOString()
   };
 
-  fetch('/api/analytics', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(data),
-    keepalive: true
-  }).catch(() => {});
+  batchQueue.push(data);
+
+  if (batchTimer) clearTimeout(batchTimer);
+  batchTimer = setTimeout(flushBatch, BATCH_INTERVAL);
+
+  if (batchQueue.length >= 10) {
+    flushBatch();
+  }
 };
 
 export const useAnalyticsLogger = () => {

@@ -42,7 +42,7 @@ export default function Faq() {
   };
 
   return (
-    <section id="faq" style={{ padding: 'var(--space-xxl) 0', backgroundColor: 'var(--color-abyss)' }}>
+    <section id="faq" style={{ padding: 'var(--space-xxl) 0', background: 'linear-gradient(to bottom, var(--color-abyss), var(--color-deep))' }}>
       <script type="application/ld+json">
         {JSON.stringify(faqSchema)}
       </script>

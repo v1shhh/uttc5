@@ -16,13 +16,13 @@ export const GlowingContactLink: React.FC<GlowingContactLinkProps> = ({ href, ch
       {/* Background Glow (only visible on hover, uses a safe implementation) */}
       <span className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none rounded-full"
             style={{
-               boxShadow: '0 0 15px 2px rgba(0, 180, 216, 0.4)',
+               boxShadow: '0 0 15px 0 rgba(0, 180, 216, 0.4)',
                transform: 'translateZ(0)'
             }}
       />
-      
+
       {/* Text layer with gradient */}
-      <span 
+      <span
         className="relative font-bold"
         style={{
           backgroundImage: 'linear-gradient(90deg, #0077b6 0%, #e0fbfc 40%, #00b4d8 50%, #e0fbfc 60%, #0077b6 100%)',
@@ -32,6 +32,7 @@ export const GlowingContactLink: React.FC<GlowingContactLinkProps> = ({ href, ch
           backgroundClip: 'text',
           WebkitTextFillColor: 'transparent',
           animation: 'sweep-gradient 3s linear infinite',
+          textShadow: '0 0 8px rgba(0, 180, 216, 0.6), 0 0 12px rgba(0, 180, 216, 0.4), 0 0 16px rgba(0, 180, 216, 0.2)',
           // Fix for Android blurring transparent text:
           transform: 'translateZ(0)',
           willChange: 'background-position',

@@ -4,9 +4,9 @@ import BudgetCalculator from '../ui/BudgetCalculator';
 
 export default function LeadMagnet() {
   return (
-    <section id="discovery" style={{ 
-      padding: 'var(--space-xxl) 0', 
-      background: 'linear-gradient(to bottom, var(--color-abyss), var(--color-deep))',
+    <section id="discovery" style={{
+      padding: 'var(--space-xxl) 0',
+      background: 'linear-gradient(to bottom, var(--color-deep), var(--color-abyss))',
     }}>
       <div className="container">
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 300px), 1fr))', gap: 'var(--space-xl)', alignItems: 'center' }}>

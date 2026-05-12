@@ -19,14 +19,14 @@ router.post('/', analyticsRateLimiter, (req, res) => {
       INSERT INTO analytics_events (session_id, user_id, event_type, event_label, page, scroll_pct, referrer, user_agent, country, metadata, experiments)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `).run(
-      session_id, 
-      user_id || null, 
-      event_type, 
-      event_label || null, 
-      page, 
-      scroll_pct || null, 
-      referrer || null, 
-      user_agent || null, 
+      session_id,
+      user_id || null,
+      event_type,
+      event_label || null,
+      page,
+      scroll_pct || null,
+      referrer || null,
+      user_agent || null,
       country,
       metadata ? JSON.stringify(metadata) : null,
       experiments ? JSON.stringify(experiments) : null
@@ -35,6 +35,55 @@ router.post('/', analyticsRateLimiter, (req, res) => {
     res.json({ ok: true });
   } catch (err) {
     console.error('Analytics error:', err);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+router.post('/batch', analyticsRateLimiter, (req, res) => {
+  try {
+    const { events } = req.body;
+
+    if (!Array.isArray(events) || events.length === 0) {
+      return res.status(400).json({ error: 'Invalid batch format' });
+    }
+
+    if (events.length > 100) {
+      return res.status(400).json({ error: 'Batch too large' });
+    }
+
+    const user_agent = req.headers['user-agent']?.substring(0, 255);
+    const country = req.headers['cf-ipcountry'] as string || null;
+
+    const insert = db.prepare(`
+      INSERT INTO analytics_events (session_id, user_id, event_type, event_label, page, scroll_pct, referrer, user_agent, country, metadata, experiments)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `);
+
+    const insertMany = db.transaction((events: any[]) => {
+      for (const event of events) {
+        if (!event.session_id || !event.event_type || !event.page) continue;
+
+        insert.run(
+          event.session_id,
+          event.user_id || null,
+          event.event_type,
+          event.event_label || null,
+          event.page,
+          event.scroll_pct || null,
+          event.referrer || null,
+          user_agent || null,
+          country,
+          event.metadata ? JSON.stringify(event.metadata) : null,
+          event.experiments ? JSON.stringify(event.experiments) : null
+        );
+      }
+    });
+
+    insertMany(events);
+
+    res.json({ ok: true, inserted: events.length });
+  } catch (err) {
+    console.error('Batch analytics error:', err);
     res.status(500).json({ error: 'Internal server error' });
   }
 });

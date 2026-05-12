@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { motion, useAnimation } from 'motion/react';
+import { motion, useAnimation, AnimatePresence } from 'motion/react';
 import { useContent } from '../../hooks/useContent';
 import WaveDivider from '../ui/WaveDivider';
 import { ExperimentView, useExperiment } from '../../hooks/useExperiment';
@@ -9,12 +9,24 @@ export default function Hero() {
   const content = useContent();
   const controls = useAnimation();
   const { getVariant } = useExperiment();
+  const [showScrollIndicator, setShowScrollIndicator] = useState(true);
 
   const ctaVariant = getVariant('hero_cta_test', ['control', 'action_oriented']);
 
   useEffect(() => {
     controls.start('visible');
   }, [controls]);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 0) {
+        setShowScrollIndicator(false);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const staggerChildren = {
     hidden: { opacity: 0, y: 30 },
@@ -32,7 +44,7 @@ export default function Hero() {
       display: 'flex',
       flexDirection: 'column',
       paddingTop: '100px',
-      paddingBottom: '20px',
+      paddingBottom: 'var(--space-xxl)',
       backgroundColor: 'var(--color-abyss)',
       overflow: 'hidden'
     }}>
@@ -50,8 +62,8 @@ export default function Hero() {
           <span className="eyebrow">{content.hero_eyebrow || "UAE'S WATER WORKS AUTHORITY SINCE 1976"}</span>
         </motion.div>
 
-        <motion.h1 custom={1} initial="hidden" animate={controls} variants={staggerChildren} style={{ marginBottom: 'var(--space-md)', maxWidth: '900px' }}>
-          <ExperimentView 
+        <motion.h1 custom={1} initial="hidden" animate={controls} variants={staggerChildren} style={{ marginBottom: 'var(--space-md)', maxWidth: '900px', fontSize: 'clamp(28px, 7vw, 64px)', lineHeight: '1.1' }}>
+          <ExperimentView
             experimentId="hero_headline_test"
             variants={{
               control: (
@@ -62,8 +74,8 @@ export default function Hero() {
               ),
               direct_benefit: (
                 <>
-                  Transform Your Property with <br/>
-                  <span style={{ fontWeight: 400 }}>World-Class Water Features</span>
+                  <span style={{ display: 'block', whiteSpace: 'nowrap' }}>Transform Your Property with</span>
+                  <span style={{ fontWeight: 400, display: 'block', whiteSpace: 'nowrap' }}>World-Class Water Features</span>
                 </>
               )
             }}
@@ -81,7 +93,7 @@ export default function Hero() {
         </motion.p>
 
         <motion.div custom={3} initial="hidden" animate={controls} variants={staggerChildren} style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', alignItems: 'center' }}>
-          <a href="#contact" className="btn-primary" data-analytics={`hero_cta_primary_${ctaVariant}`} style={{ whiteSpace: 'nowrap', fontSize: 'clamp(10px, 4vw, 14px)', paddingLeft: 'clamp(16px, 4vw, 36px)', paddingRight: 'clamp(16px, 4vw, 36px)' }}>
+          <a href="/contact" className="btn-primary" data-analytics={`hero_cta_primary_${ctaVariant}`} style={{ whiteSpace: 'nowrap', fontSize: 'clamp(10px, 4vw, 14px)', paddingLeft: 'clamp(16px, 4vw, 36px)', paddingRight: 'clamp(16px, 4vw, 36px)' }}>
             {ctaVariant === 'control' ? 'Book a Free Site Visit' : 'Get a Free Site Quote Now'}
           </a>
           <a href="/projects" className="btn-secondary" data-analytics="hero_cta_secondary">Explore Our Projects →</a>
@@ -110,6 +122,74 @@ export default function Hero() {
       <div style={{ position: 'absolute', bottom: 0, width: '100%', zIndex: 2 }}>
         <WaveDivider color="var(--color-deep)" />
       </div>
+
+      {/* Scroll Indicator */}
+      <AnimatePresence>
+        {showScrollIndicator && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0, y: -20 }}
+            animate={{ 
+              opacity: 1, 
+              scale: 1, 
+              y: 0,
+              transition: {
+                type: "spring",
+                stiffness: 200,
+                damping: 15,
+                delay: 1.5
+              }
+            }}
+            exit={{ 
+              opacity: 0, 
+              scale: 0.5, 
+              y: 20,
+              transition: { duration: 0.15 }
+            }}
+            style={{
+              position: 'absolute',
+              bottom: '150px',
+              left: '50%',
+              transform: 'translateX(-50%)',
+              zIndex: 20,
+              cursor: 'pointer'
+            }}
+            onClick={() => window.scrollTo({ top: window.innerHeight, behavior: 'smooth' })}
+          >
+            <motion.div
+              animate={{ y: [0, 10, 0] }}
+              transition={{
+                duration: 2,
+                repeat: Infinity,
+                ease: "easeInOut"
+              }}
+              style={{
+                width: '50px',
+                height: '50px',
+                borderRadius: '50%',
+                backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                boxShadow: '0 4px 20px rgba(255, 255, 255, 0.3)'
+              }}
+            >
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                style={{ color: '#030d1a' }}
+              >
+                <polyline points="6 9 12 15 18 9" />
+              </svg>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <style>{`
         .hero-bg {

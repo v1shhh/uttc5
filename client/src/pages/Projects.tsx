@@ -1,4 +1,5 @@
-import React, { Suspense, lazy } from 'react';
+import React, { Suspense, lazy, useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
 import { ArrowRight, ShieldCheck, MessageSquare } from 'lucide-react';
 import { projectsData, Project } from '../data/projects';
 import { SEO } from '../components/ui/SEO';
@@ -99,6 +100,19 @@ const ProjectCard = ({ project, variant = 'standard' }: { project: Project, vari
 };
 
 export default function Projects() {
+  const [showScrollIndicator, setShowScrollIndicator] = useState(true);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 0) {
+        setShowScrollIndicator(false);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   const sortedProjects = [...projectsData].sort((a, b) => a.rank - b.rank);
   const heroProjects = sortedProjects.slice(0, 3);
   const featuredProjects = sortedProjects.slice(3, 9);
@@ -113,22 +127,116 @@ export default function Projects() {
       <Navbar />
       
       <div className="portfolio-page">
-        <div className="container">
-          
-          {/* Header Section */}
-          <ScrollReveal>
-            <div className="page-header">
-              <span className="eyebrow" style={{ display: 'block', marginBottom: 'var(--space-md)' }}>
-                Comprehensive Portfolio
-              </span>
-              <h1 className="page-title text-gold">
-                Engineering <br/>Landmarks
-              </h1>
-              <p className="page-subtitle text-dim">
-                A legacy of uncompromising quality across the UAE's most demanding hospitality, commercial, and residential developments. These are the projects that define our engineering pedigree.
-              </p>
+
+        <ScrollReveal>
+          <div className="page-header-wrapper">
+            <div className="page-header-bg">
+              {projectsData
+                .filter(project => project.image.includes('unsplash.com'))
+                .slice(0, 6)
+                .map((project, index) => (
+                <div
+                  key={project.id}
+                  className="bg-image"
+                  style={{
+                    backgroundImage: `url(${project.image})`,
+                    animationDelay: `${index * 5}s`
+                  }}
+                />
+              ))}
             </div>
-          </ScrollReveal>
+            <div className="container" style={{ paddingTop: '140px' }}>
+              <div className="page-header" style={{ paddingBottom: 'var(--space-xxl)' }}>
+                <span className="eyebrow" style={{ display: 'block', marginBottom: 'var(--space-md)' }}>
+                  Comprehensive Portfolio
+                </span>
+                <h1 className="page-title text-gold">
+                  Engineering <br/>Landmarks
+                </h1>
+                <p className="page-subtitle text-dim">
+                  A legacy of uncompromising quality across the UAE's most demanding hospitality, commercial, and residential developments. These are the projects that define our engineering pedigree.
+                </p>
+              </div>
+            </div>
+
+            {/* Scroll Indicator */}
+            <AnimatePresence>
+              {showScrollIndicator && (
+                <motion.div
+                  initial={{ opacity: 0, scale: 0, y: -20 }}
+                  animate={{ 
+                    opacity: 1, 
+                    scale: 1, 
+                    y: 0,
+                    transition: {
+                      type: "spring",
+                      stiffness: 200,
+                      damping: 15,
+                      delay: 1.5
+                    }
+                  }}
+                  exit={{ 
+                    opacity: 0, 
+                    scale: 0.5, 
+                    y: 20,
+                    transition: { duration: 0.15 }
+                  }}
+                  style={{
+                    position: 'absolute',
+                    bottom: '20px',
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+                    zIndex: 20,
+                    cursor: 'pointer'
+                  }}
+                  onClick={() => {
+                    const heroSection = document.querySelector('.hero-section');
+                    if (heroSection) {
+                      heroSection.scrollIntoView({ behavior: 'smooth' });
+                    } else {
+                      window.scrollTo({ top: window.innerHeight * 0.5, behavior: 'smooth' });
+                    }
+                  }}
+                >
+                  <motion.div
+                    animate={{ y: [0, 10, 0] }}
+                    transition={{
+                      duration: 2,
+                      repeat: Infinity,
+                      ease: "easeInOut"
+                    }}
+                    style={{
+                      width: '50px',
+                      height: '50px',
+                      borderRadius: '50%',
+                      backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      boxShadow: '0 4px 20px rgba(255, 255, 255, 0.3)'
+                    }}
+                  >
+                    <svg
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      style={{ color: '#030d1a' }}
+                    >
+                      <polyline points="6 9 12 15 18 9" />
+                    </svg>
+                  </motion.div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        </ScrollReveal>
+
+        <div className="container">
 
           {/* Top Tier (Hero Cards) */}
           <div className="hero-section">
@@ -198,8 +306,15 @@ export default function Projects() {
         .portfolio-page {
           background-color: var(--color-abyss);
           color: var(--color-foam);
-          padding-top: calc(var(--space-xxl) * 1.5);
+          padding-top: 0;
           min-height: 100vh;
+          overflow-x: hidden;
+          width: 100%;
+        }
+
+        .portfolio-page .container {
+          max-width: 100%;
+          overflow-x: hidden;
         }
 
         .text-gold { color: var(--color-gold); }
@@ -216,9 +331,70 @@ export default function Projects() {
           text-overflow: ellipsis;
         }
 
+        .page-header-wrapper {
+          position: relative;
+          margin-bottom: var(--space-lg);
+          width: 100vw;
+          min-height: auto;
+          display: flex;
+          flex-direction: column;
+          overflow: hidden;
+        }
+
+        .page-header-bg {
+          position: absolute;
+          inset: 0;
+          z-index: 0;
+        }
+
+        .bg-image {
+          position: absolute;
+          inset: 0;
+          background-size: cover;
+          background-position: center;
+          opacity: 0;
+          animation: imageFade 30s infinite;
+        }
+
+        .bg-image:nth-child(1) { animation-delay: 0s; }
+        .bg-image:nth-child(2) { animation-delay: 5s; }
+        .bg-image:nth-child(3) { animation-delay: 10s; }
+        .bg-image:nth-child(4) { animation-delay: 15s; }
+        .bg-image:nth-child(5) { animation-delay: 20s; }
+        .bg-image:nth-child(6) { animation-delay: 25s; }
+
+        @keyframes imageFade {
+          0%, 16.67%, 100% { opacity: 0; }
+          3%, 13.67% { opacity: 1; }
+        }
+
+        .page-header-bg::after {
+          content: '';
+          position: absolute;
+          inset: 0;
+          background: linear-gradient(
+            to bottom,
+            rgba(3, 13, 26, 0.3) 0%,
+            rgba(3, 13, 26, 0.7) 50%,
+            rgba(3, 13, 26, 0.95) 85%,
+            rgba(3, 13, 26, 1) 100%
+          );
+          backdrop-filter: blur(8px) saturate(150%);
+          -webkit-backdrop-filter: blur(8px) saturate(150%);
+          z-index: 1;
+        }
+
         .page-header {
+          position: relative;
+          z-index: 2;
           max-width: 800px;
-          margin-bottom: var(--space-xxl);
+          padding: var(--space-xl) var(--space-lg) var(--space-xl) 0;
+        }
+
+        @media (min-width: 768px) {
+          .page-header {
+            padding: var(--space-xl) var(--space-xl) var(--space-xl) 0;
+          }
         }
 
         .page-title {
@@ -232,7 +408,7 @@ export default function Projects() {
         .page-subtitle {
           font-size: clamp(1.1rem, 2vw, 1.3rem);
           color: var(--color-text-dim);
-          max-width: 600px;
+          max-width: 800px;
         }
 
         .section-label {
@@ -250,6 +426,8 @@ export default function Projects() {
           display: flex;
           flex-direction: column;
           gap: var(--space-xl);
+          width: 100%;
+          max-width: 100%;
         }
 
         .project-card {
@@ -260,6 +438,7 @@ export default function Projects() {
           overflow: hidden;
           display: flex;
           transition: var(--transition);
+          max-width: 100%;
         }
 
         .hero-card {
@@ -319,7 +498,7 @@ export default function Projects() {
 
         .hero-card-content {
           flex: 1;
-          padding: var(--space-lg);
+          padding: var(--space-xl);
           display: flex;
           flex-direction: column;
           justify-content: center;
@@ -330,7 +509,7 @@ export default function Projects() {
 
         @media (min-width: 1024px) {
           .hero-card-content {
-            padding: var(--space-xl);
+            padding: calc(var(--space-xl) * 1.5);
             background: transparent;
           }
         }
@@ -420,6 +599,8 @@ export default function Projects() {
         .featured-grid, .standard-grid {
           display: grid;
           gap: var(--space-md);
+          width: 100%;
+          max-width: 100%;
         }
 
         .featured-grid {
@@ -479,7 +660,7 @@ export default function Projects() {
         }
 
         .card-content {
-          padding: var(--space-md) var(--space-lg);
+          padding: var(--space-lg);
           display: flex;
           flex-direction: column;
           flex: 1;
@@ -558,6 +739,9 @@ export default function Projects() {
           position: relative;
           overflow: hidden;
           gap: var(--space-md);
+          width: 100%;
+          max-width: 100%;
+          box-sizing: border-box;
         }
         
         .cta-banner::before {

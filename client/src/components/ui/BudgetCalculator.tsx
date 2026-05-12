@@ -168,7 +168,7 @@ export default function BudgetCalculator() {
             
             <div className="budget-results-btns">
               <button onClick={reset} style={{ flex: 1, padding: '12px', background: 'none', border: '1px solid var(--color-glass-border)', color: 'white', borderRadius: '4px', cursor: 'pointer' }}>Recalculate</button>
-              <a href="#contact" className="btn-primary" style={{ flex: 2, textAlign: 'center' }}>Get Accurate Quote →</a>
+              <a href="/contact" className="btn-primary" style={{ flex: 2, textAlign: 'center' }}>Get Accurate Quote →</a>
             </div>
           </motion.div>
         )}

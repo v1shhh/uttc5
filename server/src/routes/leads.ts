@@ -1,6 +1,8 @@
 import { Router } from 'express';
 import db from '../db/client.js';
 import { requireAuth } from '../middleware/auth.js';
+import { calculateLeadScore } from '../services/leadScoring.js';
+import { sendLeadNotification, sendLeadConfirmation } from '../services/emailService.js';
 
 const router = Router();
 
@@ -50,15 +52,58 @@ router.put('/:id/notes', requireAuth, (req, res) => {
 });
 
 
-router.post('/', (req, res) => {
+router.post('/', async (req, res) => {
   try {
     const { name, company, email, phone, service_type, project_type, budget_range, timeline, message, source_page } = req.body;
-    db.prepare(`
-      INSERT INTO leads (name, company, email, phone, service_type, project_type, budget_range, timeline, message, source_page, status)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    `).run(name, company, email, phone, service_type, project_type, budget_range, timeline, message, source_page, 'new');
-    res.json({ success: true });
+
+    // Validate required fields
+    if (!name || !email) {
+      return res.status(400).json({ success: false, error: 'Name and email are required' });
+    }
+
+    // Calculate lead score
+    const lead_score = calculateLeadScore({
+      budget_range,
+      timeline,
+      service_type,
+      project_type,
+      company,
+      phone,
+      message
+    });
+    console.log('[Lead Scoring] Calculated score:', lead_score, 'for lead:', name);
+
+    const result = db.prepare(`
+      INSERT INTO leads (name, company, email, phone, service_type, project_type, budget_range, timeline, message, source_page, status, lead_score)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `).run(name, company, email, phone, service_type, project_type, budget_range, timeline, message, source_page, 'new', lead_score);
+
+    const leadId = result.lastInsertRowid;
+    const leadData = {
+      id: leadId,
+      name,
+      company,
+      email,
+      phone,
+      service_type,
+      project_type,
+      budget_range,
+      timeline,
+      message,
+      source_page,
+      lead_score,
+      created_at: new Date()
+    };
+
+    // Send emails asynchronously (non-blocking)
+    Promise.all([
+      sendLeadNotification(leadData).catch(err => console.error('[Email] Admin notification failed:', err.error)),
+      sendLeadConfirmation(leadData).catch(err => console.error('[Email] Confirmation failed:', err.error))
+    ]);
+
+    res.json({ success: true, data: { id: leadId, lead_score } });
   } catch (err) {
+    console.error('Lead creation error:', err);
     res.status(500).json({ success: false, error: 'Database error' });
   }
 });

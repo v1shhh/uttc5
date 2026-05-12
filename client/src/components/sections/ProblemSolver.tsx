@@ -12,7 +12,7 @@ export default function ProblemSolver() {
   ];
 
   return (
-    <section id="why-us" style={{ padding: 'var(--space-xxl) 0', backgroundColor: 'var(--color-deep)' }}>
+    <section id="why-us" style={{ padding: 'var(--space-xxl) 0', background: 'linear-gradient(to bottom, var(--color-deep), var(--color-abyss))' }}>
       <div className="container">
         
         <ScrollReveal>

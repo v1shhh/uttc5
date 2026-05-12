@@ -46,7 +46,7 @@ export default function Services() {
       id="services"
       style={{
         padding: "var(--space-xxl) 0",
-        backgroundColor: "var(--color-abyss)",
+        background: "linear-gradient(to bottom, var(--color-abyss), var(--color-deep))",
       }}
     >
       <div className="container">
@@ -124,7 +124,7 @@ export default function Services() {
                   {svc.desc}
                 </p>
                 <a
-                  href="#contact"
+                  href="/contact"
                   className="service-link"
                   data-analytics={`service_${svc.num}`}
                 >

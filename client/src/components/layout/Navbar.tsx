@@ -17,7 +17,7 @@ export default function Navbar() {
     { name: 'Services', href: '/#services' },
     { name: 'Projects', href: '/projects' },
     { name: 'Testimonials', href: '/testimonials' },
-    { name: 'Contact', href: '/#contact' },
+    { name: 'Contact', href: '/contact' },
   ];
 
   return (
@@ -62,7 +62,7 @@ export default function Navbar() {
             <GlowingContactLink href="tel:800-POOLS" data-analytics="navbar_phone" style={{ fontFamily: 'var(--font-impact)', fontSize: '20px' }}>
               800-POOLS
             </GlowingContactLink>
-            <a href="/#contact" data-analytics="navbar_quote" style={{
+            <a href="/contact" data-analytics="navbar_quote" style={{
               border: '2px solid var(--color-gold)',
               color: 'var(--color-gold)',
               padding: '8px 16px',
@@ -126,7 +126,7 @@ export default function Navbar() {
             </nav>
             <div style={{ paddingBottom: 'var(--space-md)' }}>
               <a href="tel:800-POOLS" data-analytics="mobile_menu_phone" className="btn-primary" style={{ width: '100%', marginBottom: '1rem' }}>Call 800-POOLS</a>
-              <a href="/#contact" onClick={() => setMobileMenu(false)} className="btn-secondary" style={{ width: '100%' }}>Get a Quote</a>
+              <a href="/contact" onClick={() => setMobileMenu(false)} className="btn-secondary" style={{ width: '100%' }}>Get a Quote</a>
             </div>
           </motion.div>
         )}

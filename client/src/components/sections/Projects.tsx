@@ -31,7 +31,7 @@ export default function Projects() {
   if (topProjects.length < 3) return null;
 
   return (
-    <section id="portfolio" style={{ paddingTop: '0', paddingBottom: 'var(--space-xxl)', backgroundColor: 'var(--color-abyss)' }}>
+    <section id="portfolio" style={{ padding: 'var(--space-xxl) 0', background: 'linear-gradient(to bottom, var(--color-deep), var(--color-abyss))' }}>
       <div className="container">
         <ScrollReveal>
           <div style={{ marginBottom: 'var(--space-lg)', maxWidth: '800px' }}>
