@@ -8,7 +8,7 @@ export const config = {
   EMAIL_PASS: process.env.EMAIL_PASS,
   EMAIL_TO: process.env.EMAIL_TO || process.env.EMAIL_USER || 'admin@uttc.com',
   OPENROUTER_API_KEY: process.env.OPENROUTER_API_KEY,
-  APP_URL: process.env.APP_URL || 'http://localhost:3001',
+  APP_URL: process.env.APP_URL || process.env.RENDER_EXTERNAL_URL || 'http://localhost:3001',
   NODE_ENV: process.env.NODE_ENV || 'development',
   PORT: parseInt(process.env.PORT || '3001'),
 };
