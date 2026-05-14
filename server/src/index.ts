@@ -12,6 +12,7 @@ import adminRouter from './routes/admin.js';
 import contentRouter from './routes/content.js';
 import aiRouter from './routes/ai.js';
 import { requestLogger } from './middleware/requestLogger.js';
+import { config } from './config.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -20,8 +21,8 @@ async function startServer() {
   const app = express();
   app.set('trust proxy', 1);
 
-  const isProd = process.env.NODE_ENV === 'production';
-  let PORT = 3001;
+  const isProd = config.NODE_ENV === 'production';
+  let PORT = config.PORT;
 
   // Initialize DB
   runMigrations();

@@ -1,11 +1,12 @@
 import { Router } from 'express';
 import { requireAuth } from '../middleware/auth.js';
 import db from '../db/client.js';
+import { config } from '../config.js';
 
 const router = Router();
 
 router.get('/test-env', (req, res) => {
-  res.json({ keyLength: process.env.OPENROUTER_API_KEY ? process.env.OPENROUTER_API_KEY.length : 0, keyPreview: process.env.OPENROUTER_API_KEY ? process.env.OPENROUTER_API_KEY.substring(0, 5) : 'none' });
+  res.json({ keyLength: config.OPENROUTER_API_KEY ? config.OPENROUTER_API_KEY.length : 0, keyPreview: config.OPENROUTER_API_KEY ? config.OPENROUTER_API_KEY.substring(0, 5) : 'none' });
 });
 
 router.get('/recommendations', requireAuth, async (req, res) => {
@@ -77,7 +78,7 @@ router.get('/recommendations', requireAuth, async (req, res) => {
         const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
           method: "POST",
           headers: {
-            "Authorization": `Bearer ${process.env.OPENROUTER_API_KEY}`,
+            "Authorization": `Bearer ${config.OPENROUTER_API_KEY}`,
             "Content-Type": "application/json"
           },
           body: JSON.stringify({ model, messages })

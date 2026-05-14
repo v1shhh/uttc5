@@ -3,9 +3,9 @@ import db from '../db/client.js';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { requireAuth } from '../middleware/auth.js';
+import { config } from '../config.js';
 
 const router = Router();
-const JWT_SECRET = process.env.JWT_SECRET || 'fallback-secret';
 
 router.post('/login', (req, res) => {
   console.log('[DEBUG] Login attempt received', req.body.username);
@@ -34,7 +34,7 @@ router.post('/login', (req, res) => {
       return res.status(401).json({ success: false, error: 'Invalid credentials' });
     }
     
-    const token = jwt.sign({ id: user.id, username: user.username }, JWT_SECRET, { expiresIn: '24h' });
+    const token = jwt.sign({ id: user.id, username: user.username }, config.JWT_SECRET, { expiresIn: '24h' });
     console.log('[DEBUG] Login successful for', username);
     res.json({ success: true, token });
   } catch (err) {

@@ -31,12 +31,12 @@ interface LeadData {
 
 // Initialize transporter
 const transporter = nodemailer.createTransport({
-  host: process.env.EMAIL_HOST || 'smtp.gmail.com',
-  port: parseInt(process.env.EMAIL_PORT || '587'),
-  secure: process.env.EMAIL_PORT === '465',
+  host: config.EMAIL_HOST,
+  port: config.EMAIL_PORT,
+  secure: config.EMAIL_PORT === 465,
   auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
+    user: config.EMAIL_USER,
+    pass: config.EMAIL_PASS,
   },
 });
 
@@ -58,7 +58,7 @@ async function sendWithRetry(
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
     try {
       const info = await transporter.sendMail({
-        from: `"UTTC Pool Construction" <${process.env.EMAIL_USER}>`,
+        from: `"UTTC Pool Construction" <${config.EMAIL_USER}>`,
         ...options,
       });
 
@@ -85,7 +85,7 @@ export async function sendLeadNotification(leadData: LeadData): Promise<SendResu
   const html = generateLeadEmailTemplate(leadData);
 
   return sendWithRetry({
-    to: process.env.EMAIL_TO || process.env.EMAIL_USER || 'admin@uttc.com',
+    to: config.EMAIL_TO,
     subject: `🔥 New Lead: ${leadData.name}${leadData.company ? ` from ${leadData.company}` : ''} (Score: ${leadData.lead_score || 0})`,
     html,
     replyTo: leadData.email,
@@ -201,7 +201,7 @@ function generateLeadEmailTemplate(lead: LeadData): string {
             ` : ''}
 
             <div style="text-align: center; margin-top: 30px;">
-              <a href="http://localhost:3001/admin/leads" class="cta">View in Admin Dashboard →</a>
+              <a href="${config.APP_URL}/admin/leads" class="cta">View in Admin Dashboard →</a>
             </div>
           </div>
           <div class="footer">
