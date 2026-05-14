@@ -10,7 +10,7 @@ export const ScrollReveal: React.FC<{ children: ReactNode, delay?: number, thres
       ref={ref}
       initial={{ opacity: 0, y: 30 }}
       animate={isVisible ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
-      transition={{ duration: 0.6, delay, ease: [0.4, 0, 0.2, 1] }}
+      transition={{ duration: 0.6, delay, ease: [0.4, 0, 0.2, 1] as any }}
       className={className}
       style={style}
     >

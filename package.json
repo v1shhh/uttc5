@@ -1,6 +1,9 @@
 {
   "name": "uttc-website",
   "private": true,
+  "engines": {
+    "node": ">=20.0.0"
+  },
   "scripts": {
     "dev": "tsx server/src/index.ts",
     "build": "vite build && tsc --project tsconfig.json",
