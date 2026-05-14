@@ -4,8 +4,8 @@
     "noEmit": false,
     "outDir": "./dist/server/src",
     "rootDir": "./server/src",
-    "moduleResolution": "node",
-    "module": "ESNext",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
     "allowImportingTsExtensions": false
   },
   "include": ["server/src/**/*"]
