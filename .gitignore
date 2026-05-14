@@ -1,8 +1,49 @@
+# Dependency directories
 node_modules/
-build/
+jspm_packages/
+
+# Build outputs
 dist/
+build/
+out/
+.next/
+.cache/
 coverage/
-.DS_Store
+
+# Logs
 *.log
+logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+request_log.txt
+
+# Environment variables
 .env*
 !.env.example
+
+# OS metadata
+.DS_Store
+Thumbs.db
+
+# IDEs and editors
+.vscode/
+.idea/
+*.swp
+*.swo
+.project
+.classpath
+.settings/
+
+# SQLite / Databases
+*.db
+*.db-shm
+*.db-wal
+
+# Temporary / AI files / Scratch tests
+ai_output_temp/
+test-*.ts
+
+# Markdown files (As requested)
+*.md
