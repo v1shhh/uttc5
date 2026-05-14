@@ -2,7 +2,7 @@ import db from './db/client.js';
 import { calculateLeadScore } from './services/leadScoring.js';
 
 // Update all existing leads with calculated scores
-const leads = db.prepare('SELECT * FROM leads WHERE lead_score = 0 OR lead_score IS NULL').all();
+const leads = db.prepare('SELECT * FROM leads WHERE lead_score = 0 OR lead_score IS NULL').all() as any[];
 
 console.log(`Found ${leads.length} leads to update`);
 

@@ -15,7 +15,7 @@ interface SendResult {
 }
 
 interface LeadData {
-  id?: number;
+  id?: number | bigint;
   name: string;
   company?: string;
   email: string;
