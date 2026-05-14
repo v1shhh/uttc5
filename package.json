@@ -6,8 +6,8 @@
   },
   "scripts": {
     "dev": "tsx server/src/index.ts",
-    "build": "vite build && tsc --project tsconfig.json",
-    "start": "tsx server/src/index.ts",
+    "build": "vite build && tsc --project tsconfig.server.json",
+    "start": "node dist/server/src/index.js",
     "clean": "rm -rf dist",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0"
   },

@@ -5,7 +5,8 @@
     "outDir": "./dist/server/src",
     "rootDir": "./server/src",
     "moduleResolution": "node",
-    "module": "ESNext"
+    "module": "ESNext",
+    "allowImportingTsExtensions": false
   },
   "include": ["server/src/**/*"]
 }
